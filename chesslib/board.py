@@ -114,7 +114,7 @@ class Board(dict):
             self.fullmove_number += 1
         self.halfmove_clock +=1
         self.player_turn = enemy
-        abbr = piece.abbriviation
+        abbr = piece.abbreviation
         if abbr == 'P':
             # Pawn has no letter
             abbr = ''
@@ -238,7 +238,7 @@ class Board(dict):
             for letter in self.axis_y:
                 piece = self[letter+str(number)]
                 if piece is not None:
-                    result += piece.abbriviation
+                    result += piece.abbreviation
                 else: result += ' '
             result += '/'
 

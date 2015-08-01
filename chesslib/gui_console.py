@@ -44,7 +44,7 @@ class BoardGuiConsole(object):
             for letter in self.board.axis_y:
                 piece = self.board[letter+str(number)]
                 if piece is not None:
-                    print UNICODE_PIECES[piece.abbriviation] + ' ',
+                    print UNICODE_PIECES[piece.abbreviation] + ' ',
                 else: print '  ',
             print "\n"
         print "    " + "  ".join(self.board.axis_y)

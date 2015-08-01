@@ -14,10 +14,10 @@ class InvalidPiece(Exception): pass
 class InvalidColor(Exception): pass
 
 def piece(piece, color='white'):
-    ''' Takes a piece name or abbriviation and returns the corresponding piece instance '''
+    ''' Takes a piece name or abbreviation and returns the corresponding piece instance '''
     if piece in (None, ' '): return
     if len(piece) == 1:
-        # We have an abbriviation
+        # We have an abbreviation
         if piece.isupper(): color = 'white'
         else: color = 'black'
         piece = ABBRIVIATIONS[piece.upper()]
@@ -25,13 +25,13 @@ def piece(piece, color='white'):
     return module.__dict__[piece](color)
 
 class Piece(object):
-    __slots__ = ('abbriviation', 'color')
+    __slots__ = ('abbreviation', 'color')
 
     def __init__(self, color):
         if color == 'white':
-            self.abbriviation = self.abbriviation.upper()
+            self.abbreviation = self.abbreviation.upper()
         elif color == 'black':
-            self.abbriviation = self.abbriviation.lower()
+            self.abbreviation = self.abbreviation.lower()
 
         try:
             self.color = color
@@ -76,13 +76,13 @@ class Piece(object):
         return map(board.letter_notation, legal_moves)
 
     def __str__(self):
-        return self.abbriviation
+        return self.abbreviation
 
     def __repr__(self):
         return "<" + self.color.capitalize() + " " + self.__class__.__name__ + ">"
 
 class Pawn(Piece):
-    abbriviation = 'p'
+    abbreviation = 'p'
     def possible_moves(self, position):
         board = self.board
         position = position.upper()
@@ -121,7 +121,7 @@ class Pawn(Piece):
 
 
 class Knight(Piece):
-    abbriviation = 'n'
+    abbreviation = 'n'
     def possible_moves(self,position):
         board = self.board
         position = position.upper()
@@ -140,25 +140,25 @@ class Knight(Piece):
 
 
 class Rook(Piece):
-    abbriviation = 'r'
+    abbreviation = 'r'
     def possible_moves(self,position):
         position = position.upper()
         return super(Rook, self).possible_moves(position, True, False, 8)
 
 class Bishop(Piece):
-    abbriviation = 'b'
+    abbreviation = 'b'
     def possible_moves(self,position):
         position = position.upper()
         return super(Bishop,self).possible_moves(position, False, True, 8)
 
 class Queen(Piece):
-    abbriviation = 'q'
+    abbreviation = 'q'
     def possible_moves(self,position):
         position = position.upper()
         return super(Queen, self).possible_moves(position, True, True, 8)
 
 class King(Piece):
-    abbriviation = 'k'
+    abbreviation = 'k'
     move_length = 1
     def possible_moves(self,position):
         position = position.upper()

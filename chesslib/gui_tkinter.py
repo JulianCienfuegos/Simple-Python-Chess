@@ -10,8 +10,8 @@ class BoardGuiTk(tk.Frame):
     hilighted = None
     icons = {}
 
-    color1 = "white"
-    color2 = "grey"
+    color1 = "White"
+    color2 = "red"
 
     rows = 8
     columns = 8
@@ -32,7 +32,7 @@ class BoardGuiTk(tk.Frame):
 
         tk.Frame.__init__(self, parent)
 
-        self.canvas = tk.Canvas(self, width=canvas_width, height=canvas_height, background="grey")
+        self.canvas = tk.Canvas(self, width=canvas_width, height=canvas_height, background="grey") # should be grey
         self.canvas.pack(side="top", fill="both", anchor="c", expand=True)
 
         self.canvas.bind("<Configure>", self.refresh)
@@ -138,8 +138,8 @@ class BoardGuiTk(tk.Frame):
         for coord, piece in self.chessboard.iteritems():
             x,y = self.chessboard.number_notation(coord)
             if piece is not None:
-                filename = "img/%s%s.png" % (piece.color, piece.abbriviation.lower())
-                piecename = "%s%s%s" % (piece.abbriviation, x, y)
+                filename = "img/%s%s.png" % (piece.color, piece.abbreviation.lower())
+                piecename = "%s%s%s" % (piece.abbreviation, x, y)
 
                 if(filename not in self.icons):
                     self.icons[filename] = ImageTk.PhotoImage(file=filename, width=32, height=32)
