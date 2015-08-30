@@ -24,7 +24,9 @@ To install the dependancies on debian/ubuntu run:
 
 TODO:
     * En passant
-    * Pawn promotion
     * Fifty-move rule
     * Tests
     * Scalable GUI window
+
+DONE:
+    * Pawn promotion
