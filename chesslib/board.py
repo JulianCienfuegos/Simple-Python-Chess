@@ -24,7 +24,7 @@ class PieceChooser:
     def __init__(self, parent, color):
         top = self.top = tk.Toplevel(parent)
         self.myLabel = tk.Label(top, text='Choose a Piece')
-        self.myLabel.pack()
+        self.myLabel.grid(row = 0, column = 0)
         self.color = color
         if self.color == 'black':
             self.Q = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/blackQ.gif')
@@ -37,16 +37,16 @@ class PieceChooser:
             self.B = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteB.gif')
             self.R = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteR.gif')
         self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.Q, text="optional text", bg='green', command=self.chooseQ)
-        self.myButton.pack()
+        self.myButton.grid(row = 1, column = 0)
 
         self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.B, text="optional text", bg='green', command=self.chooseB)
-        self.myButton.pack()
+        self.myButton.grid(row = 1, column = 1)
 
         self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.N, text="optional text", bg='green', command=self.chooseN)
-        self.myButton.pack()
+        self.myButton.grid(row = 2, column = 0)
 
         self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.R, text="optional text", bg='green', command=self.chooseR)
-        self.myButton.pack()
+        self.myButton.grid(row = 2, column = 1)
 
     def chooseQ(self):
         global chosen_piece
