@@ -1,8 +1,9 @@
 from itertools import groupby
 from copy import deepcopy
+import Tkinter as tk
+import re
 
 import pieces
-import re
 
 class ChessError(Exception): pass
 class InvalidCoord(ChessError): pass
@@ -16,6 +17,75 @@ class NotYourTurn(ChessError): pass
 FEN_STARTING = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 RANK_REGEX = re.compile(r"^[A-Z][1-8]$")
 
+chosen_piece = ''
+
+# This would be better if put in its own file, but I'm not sure how to make it see the gloabl chosen_piece variable.
+class PieceChooser:
+    def __init__(self, parent, color):
+        top = self.top = tk.Toplevel(parent)
+        self.myLabel = tk.Label(top, text='Choose a Piece')
+        self.myLabel.pack()
+        self.color = color
+        if self.color == 'black':
+            self.Q = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/blackQ.gif')
+            self.N = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/blackN.gif')
+            self.B = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/blackB.gif')
+            self.R = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/blackR.gif')
+        else:
+            self.Q = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteQ.gif')
+            self.N = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteN.gif')
+            self.B = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteB.gif')
+            self.R = tk.PhotoImage(file='/home/melvyn/Simple-Python-Chess/img/whiteR.gif')
+        self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.Q, text="optional text", bg='green', command=self.chooseQ)
+        self.myButton.pack()
+
+        self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.B, text="optional text", bg='green', command=self.chooseB)
+        self.myButton.pack()
+
+        self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.N, text="optional text", bg='green', command=self.chooseN)
+        self.myButton.pack()
+
+        self.myButton = tk.Button(top,  compound=tk.TOP, width=100, height=100, image=self.R, text="optional text", bg='green', command=self.chooseR)
+        self.myButton.pack()
+
+    def chooseQ(self):
+        global chosen_piece
+        if self.color == 'black':
+            chosen_piece = 'q'
+        else:
+            chosen_piece = 'Q'
+        self.top.destroy()
+
+    def chooseN(self):
+        global chosen_piece
+        if self.color == 'black':
+            chosen_piece = 'n'
+        else:
+            chosen_piece = 'N'
+        self.top.destroy()
+
+    def chooseR(self):
+        global chosen_piece
+        if self.color == 'black':
+            chosen_piece = 'r'
+        else:
+            chosen_piece = 'R'
+        self.top.destroy()
+    
+    def chooseB(self):
+        global chosen_piece
+        if self.color == 'black':
+            chosen_piece = 'b'
+        else:
+            chosen_piece = 'B'
+        self.top.destroy()
+            
+def choose_piece(root, color):
+    inputDialog = PieceChooser(root, color)
+    root.wait_window(inputDialog.top)
+
+
+# This is the only class that should be in this file.
 class Board(dict):
     '''
        Board
@@ -59,13 +129,13 @@ class Board(dict):
 
     def save_to_file(self): pass
 
-    def is_in_check_after_move(self, p1, p2):
+    def is_in_check_after_move(self, p1, p2, parent):
         # Create a temporary board
         tmp = deepcopy(self)
-        tmp._do_move(p1,p2)
+        tmp._do_move(p1,p2,parent)
         return tmp.is_in_check(self[p1].color)
 
-    def move(self, p1, p2):
+    def move(self, p1, p2, parent):
         p1, p2 = p1.upper(), p2.upper()
         piece = self[p1]
         dest  = self[p2]
@@ -81,29 +151,50 @@ class Board(dict):
 
         # If enemy has any moves look for check
         if self.all_possible_moves(enemy):
-            if self.is_in_check_after_move(p1,p2):
+            if self.is_in_check_after_move(p1,p2, parent):
                 raise Check
 
         if not possible_moves and self.is_in_check(piece.color):
+            print 'Checkmate!'
             raise CheckMate
         elif not possible_moves:
+            print 'Stalemate!'
             raise Draw
         else:
-            self._do_move(p1, p2)
+            choose = 'choose piece'
+            self._do_move(p1, p2, parent, choose)
             self._finish_move(piece, dest, p1,p2)
 
     def get_enemy(self, color):
         if color == "white": return "black"
         else: return "white"
 
-    def _do_move(self, p1, p2):
+    def _do_move(self, p1, p2, parent, choose = 'dont choose'):
         '''
             Move a piece without validation
         '''
         piece = self[p1]
         dest  = self[p2]
         del self[p1]
-        self[p2] = piece
+        if piece.color == 'white' and self.on_boundary(p2) and piece.abbreviation.lower() == 'p' and choose == 'choose piece':
+            choose_piece(parent, piece.color)
+            self[p2] = pieces.piece(chosen_piece)
+            self[p2].place(self)    
+        elif piece.color == 'black' and self.on_boundary(p2) and piece.abbreviation.lower() == 'p' and choose == 'choose piece':
+            choose_piece(parent, piece.color)
+            self[p2] = pieces.piece(chosen_piece)
+            self[p2].place(self)
+        else:
+            self[p2] = piece
+
+
+    def on_boundary(self, p2):
+        ''' This function is used for pawn promotion. '''
+        bd = re.compile(r'^[A-H][1|8]$')
+        if bd.match(p2):
+            return True
+        else:
+            return False
 
     def _finish_move(self, piece, dest, p1, p2):
         '''

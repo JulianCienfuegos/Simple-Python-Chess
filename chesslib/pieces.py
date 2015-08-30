@@ -15,6 +15,7 @@ class InvalidColor(Exception): pass
 
 def piece(piece, color='white'):
     ''' Takes a piece name or abbreviation and returns the corresponding piece instance '''
+    
     if piece in (None, ' '): return
     if len(piece) == 1:
         # We have an abbreviation

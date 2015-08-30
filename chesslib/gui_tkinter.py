@@ -80,7 +80,7 @@ class BoardGuiTk(tk.Frame):
         dest_piece = self.chessboard[p2]
         if dest_piece is None or dest_piece.color != piece.color:
             try:
-                self.chessboard.move(p1,p2)
+                self.chessboard.move(p1,p2, self.parent)
             except board.ChessError as error:
                 self.label_status["text"] = error.__class__.__name__
             else:
@@ -163,6 +163,3 @@ def display(chessboard):
 
     #root.resizable(0,0)
     root.mainloop()
-
-if __name__ == "__main__":
-    display()
